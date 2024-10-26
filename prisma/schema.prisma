@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Define your database URL here
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  idUser       Int           @id @default(autoincrement())
+  username     String        @unique
+  password     String
+  userQuestions UserQuestion[]
+  userWords     UserWords[]
+}
+
+model UserQuestion {
+  idUserQuestion Int       @id @default(autoincrement())
+  userId        Int
+  questionId    Int
+  user          User      @relation(fields: [userId], references: [idUser], onUpdate: NoAction, onDelete: NoAction)
+  question      Question   @relation(fields: [questionId], references: [idQuestion], onUpdate: NoAction, onDelete: NoAction)
+}
+
+model UserWords {
+  idUserWords   Int       @id @default(autoincrement())
+  userId        Int
+  wordsId       Int
+  user          User      @relation(fields: [userId], references: [idUser], onUpdate: NoAction, onDelete: NoAction)
+  words         Words     @relation(fields: [wordsId], references: [idWords], onUpdate: NoAction, onDelete: NoAction)
+}
+
+model Question {
+  idQuestion    Int        @id @default(autoincrement())
+  title         String
+  userQuestions  UserQuestion[]
+}
+
+model Words {
+  idWords       Int        @id @default(autoincrement())
+  word          String     @unique
+  userWords      UserWords[]
+}
+
+
